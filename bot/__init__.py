@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from queue import Queue
-from telegram.bot import Bot
-from telegram.ext import Dispatcher, Defaults, JobQueue
+from telegram.ext import ExtBot, Dispatcher, Defaults, JobQueue
 from threading import Thread
 
 from bot.config import TOKEN, TIMEZONE
@@ -11,7 +10,7 @@ from bot.handlers.scheduler import scheduler
 
 defaults = Defaults(parse_mode='MarkdownV2', disable_web_page_preview=True, tzinfo=TIMEZONE)
 
-bot = Bot(token=TOKEN, defaults=defaults)
+bot = ExtBot(token=TOKEN, defaults=defaults)
 
 update_queue = Queue()
 job_queue = JobQueue()
