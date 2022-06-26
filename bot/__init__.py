@@ -2,8 +2,6 @@ from datetime import datetime, timedelta
 from queue import Queue
 from telegram.bot import Bot
 from telegram.ext import Dispatcher, Defaults, JobQueue
-from telegram.ext.messagequeue import MessageQueue, queuedmessage
-from telegram.utils.request import Request
 from threading import Thread
 
 from bot.config import TOKEN, TIMEZONE
@@ -11,23 +9,10 @@ from bot.handlers import register_handlers
 from bot.handlers.scheduler import scheduler
 
 
-class MQBot(Bot):
-    def __init__(self, *args, is_queued_def=True, mqueue=None, **kwargs):
-        super(MQBot, self).__init__(*args, **kwargs)
-        self._is_messages_queued_default = is_queued_def
-        self._msg_queue = mqueue or MessageQueue()
-
-    @queuedmessage
-    def send_message(self, *args, **kwargs):
-        return super(MQBot, self).send_message(*args, **kwargs)
-
-
-request = Request(con_pool_size=8)
-queue = MessageQueue(all_burst_limit=29, all_time_limit_ms=1035, group_burst_limit=19,
-                     group_time_limit_ms=60990)
 defaults = Defaults(parse_mode='MarkdownV2', disable_web_page_preview=True, tzinfo=TIMEZONE)
 
-bot = MQBot(TOKEN, request=request, mqueue=queue, defaults=defaults)
+bot = Bot(token=TOKEN, defaults=defaults)
+
 update_queue = Queue()
 job_queue = JobQueue()
 
