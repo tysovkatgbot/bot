@@ -8,8 +8,7 @@ def insert_user(userid):
             INSERT INTO users (userid)
             VALUES ({0})
             ON CONFLICT (userid)
-            DO NOTHING
-            RETURNING userid;
+            DO NOTHING;
             """
     out = query_execute(query.format(userid))
     return out[0] if out else None

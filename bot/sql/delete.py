@@ -5,8 +5,7 @@ def delete_user(userid):
     query = """
             DROP TABLE IF EXISTS people_{0};
             DELETE FROM users
-            WHERE userid = {0}
-            RETURNING *;
+            WHERE userid = {0};
             """
     out = query_execute(query.format(userid))
     return out if out else None

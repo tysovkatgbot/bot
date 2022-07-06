@@ -93,7 +93,8 @@ def process_holidays(update, context):
     txt = message.text
     holidays_rows = get_holidays()
     vals = [x.split(', ', 1) for x in txt.split('\n')]
-    if len(vals[0]) in [1, 2] and len(set(([len(x) for x in vals]))) == 1:
+    forbidden = any(x in ['"', "'", '\\'] for x in txt)
+    if len(vals[0]) in [1, 2] and len(set(([len(x) for x in vals]))) == 1 and not forbidden:
         if len(vals[0]) == 2:
             keys = [x[0] for x in vals]
             seen_keys, dupl_keys = {}, []

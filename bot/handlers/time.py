@@ -54,7 +54,7 @@ def time_cb(update, context):
     substate = db_user[7]
     if substate:
         if query_data == 't_btn':
-            update_user('step', 'NULL', user_id)
+            update_user('step', "'time'", user_id)
             step = db_user[9]
             if step == 'settings':
                 markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
