@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from bot.config import TIMEZONE, CREATOR_ID, DEFAULT_MARKUP, CREATOR_MARKUP, END
-from bot.msgs import msg_29, msg_30, msg_31, msg_32
+from bot.msgs import msg_30, msg_31, msg_32, msg_33
 from bot.sql.get import get_user, get_table, get_birthday, get_switched, get_prompted, get_ignored
 from bot.sql.update import update_user, update_people
 from bot.tools.chat_check import chat_check
@@ -18,7 +18,7 @@ def cancel_msg(update, context):
     markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
     if step in ['people', 'time', 'settings', 'holidays']:
         update_user('step', 'NULL', user_id)
-        bot.send_message(user_id, msg_29, reply_markup=markup)
+        bot.send_message(user_id, msg_30, reply_markup=markup)
     elif step in ['on', 'off']:
         update_user('step', 'NULL', user_id)
         if get_table(user_id):
@@ -40,22 +40,22 @@ def cancel_msg(update, context):
                     if repeated_list and timesetting_time:
                         for userid in repeated_list:
                             update_people(user_id, 'ignored', True, userid)
-                        bot.send_message(user_id, msg_31, reply_markup=markup)
-                    else:
                         bot.send_message(user_id, msg_32, reply_markup=markup)
+                    else:
+                        bot.send_message(user_id, msg_33, reply_markup=markup)
                 else:
                     if repeated_list and timesetting_time:
                         for userid in repeated_list:
                             update_people(user_id, 'ignored', False, userid)
-                        msg = msg_30.format(a=timesetting_time)
+                        msg = msg_31.format(a=timesetting_time)
                         bot.send_message(user_id, msg, reply_markup=markup)
                     else:
-                        bot.send_message(user_id, msg_32, reply_markup=markup)
+                        bot.send_message(user_id, msg_33, reply_markup=markup)
             else:
-                bot.send_message(user_id, msg_32, reply_markup=markup)
+                bot.send_message(user_id, msg_33, reply_markup=markup)
         else:
-            bot.send_message(user_id, msg_32, reply_markup=markup)
+            bot.send_message(user_id, msg_33, reply_markup=markup)
     else:
-        bot.send_message(user_id, msg_32, reply_markup=markup)
+        bot.send_message(user_id, msg_33, reply_markup=markup)
     update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END

@@ -1,7 +1,7 @@
 from telegram.utils.helpers import mention_markdown
 
 from bot.config import CREATOR_ID, CREATOR_USERNAME
-from bot.msgs import msg_1, msg_2, msg_33
+from bot.msgs import msg_1, msg_2, msg_34
 from bot.msgs.emojis import emoji_5, emoji_9, greeting_emoji
 from bot.sql.get import get_users, get_user
 from bot.sql.insert import insert_user
@@ -23,12 +23,12 @@ def new_msg(update, context):
             username = get_user(userid)[1]
             if username:
                 mention = mention_markdown(userid, username, version=2)
-                message.reply_text(msg_33.format(a=', ' + mention, b=greeting_emoji()))
+                message.reply_text(msg_34.format(a=', ' + mention, b=greeting_emoji()))
             else:
-                message.reply_text(msg_33.format(a='', b=greeting_emoji()))
+                message.reply_text(msg_34.format(a='', b=greeting_emoji()))
         else:
             insert_user(userid)
-            message.reply_text(msg_33.format(a='', b=greeting_emoji()))
+            message.reply_text(msg_34.format(a='', b=greeting_emoji()))
     elif new_user.id == bot.id:
         greeting = msg_1.format(a=', *тусовка*', b=emoji_5)
         version = version_get()

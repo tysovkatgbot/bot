@@ -4,7 +4,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from bot.config import TIMEZONE, CREATOR_ID, DEFAULT_MARKUP, OPTIONS_MARKUP, TIME_ENTERED, \
                        TIME_REPEATED, CREATOR_MARKUP, END
 from bot.handlers.scheduler import mention_layout
-from bot.msgs import msg_7, msg_9, msg_19, msg_20, msg_21, msg_22, msg_23, msg_24, msg_25
+from bot.msgs import msg_7, msg_9, msg_20, msg_21, msg_22, msg_23, msg_24, msg_25, msg_26
 from bot.msgs.emojis import emoji_10, emoji_13, emoji_21
 from bot.sql.get import get_user, get_table, get_birthday, get_switched, get_prompted, get_ignored
 from bot.sql.update import update_user, update_people
@@ -27,18 +27,18 @@ def time_msg(update, context):
             update_user('step', 'NULL', user_id)
             timesetting = db_user[8]
             if timesetting == '00:00':
-                timesetting_type = msg_21.format(a=timesetting)
-            else:
                 timesetting_type = msg_22.format(a=timesetting)
+            else:
+                timesetting_type = msg_23.format(a=timesetting)
             clock_emoji = time_emoji(timesetting)
-            msg = msg_23.format(a=timesetting_type, b=clock_emoji)
+            msg = msg_24.format(a=timesetting_type, b=clock_emoji)
             button = [[InlineKeyboardButton(text='изменить время', callback_data='t_btn')]]
             markup = InlineKeyboardMarkup(button)
             bot.send_message(user_id, msg, reply_markup=markup)
         else:
             update_user('step', "'time'", user_id)
             markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-            bot.send_message(user_id, msg_20, reply_markup=markup)
+            bot.send_message(user_id, msg_21, reply_markup=markup)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return END
 
@@ -60,7 +60,7 @@ def time_cb(update, context):
                 markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
             else:
                 markup = None
-            bot.send_message(user_id, msg_19, reply_markup=markup)
+            bot.send_message(user_id, msg_20, reply_markup=markup)
             query.answer()
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             return TIME_ENTERED
@@ -70,7 +70,7 @@ def time_cb(update, context):
     else:
         update_user('step', "'time'", user_id)
         markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-        bot.send_message(user_id, msg_20, reply_markup=markup)
+        bot.send_message(user_id, msg_21, reply_markup=markup)
         query.answer()
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END
@@ -87,7 +87,7 @@ def enter_time(update, context):
     if datetime_check(txt, '%H:%M'):
         timesetting = f'{txt.zfill(5) if len(txt) == 4 else txt}'
         clock_emoji = time_emoji(timesetting)
-        msg = msg_25.format(a=timesetting, b=clock_emoji)
+        msg = msg_26.format(a=timesetting, b=clock_emoji)
         if get_table(user_id):
             switched_list = get_switched(user_id, True)
             if switched_list:
@@ -107,7 +107,7 @@ def enter_time(update, context):
                         update_user('step', "'time'", user_id)
                         bot_data[f'timesetting_{user_id}'] = timesetting
                         mentions, line, _ = mention_layout(user_id, repeated_list)
-                        msg = msg_24.format(a=mentions, b=line, c=timesetting)
+                        msg = msg_25.format(a=mentions, b=line, c=timesetting)
                         bot.send_message(user_id, msg, reply_markup=OPTIONS_MARKUP)
                         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
                         return TIME_REPEATED
@@ -147,7 +147,7 @@ def repeat_time(update, context):
         bot_data.pop(f'timesetting_{user_id}')
         update_user('timesetting', f"'{timesetting}'", user_id)
         clock_emoji = time_emoji(timesetting)
-        msg = msg_25.format(a=timesetting, b=clock_emoji)
+        msg = msg_26.format(a=timesetting, b=clock_emoji)
         if get_table(user_id):
             switched_list = get_switched(user_id, True)
             if switched_list:

@@ -8,7 +8,7 @@ from bot.config import TIMEZONE, CREATOR_ID, DEFAULT_MARKUP, CREATOR_MARKUP, GEN
                        BIRTHDAY_STORED, SETTING_CHOSEN, END
 from bot.handlers.settings import settings_msg
 from bot.handlers.sub import sub_msg
-from bot.msgs import msg_3, msg_4, msg_5, msg_6, msg_7, msg_8, msg_9, msg_10, msg_36
+from bot.msgs import msg_3, msg_4, msg_5, msg_6, msg_7, msg_8, msg_9, msg_10, msg_37
 from bot.sql.get import get_users, get_user
 from bot.sql.update import update_user
 from bot.tools.chat_check import chat_check
@@ -123,7 +123,7 @@ def store_gender(update, context):
                 settings_msg(update, context)
     elif txt == 'назад':
         update_user('step', "'settings'", user_id)
-        bot.send_message(user_id, msg_36, reply_markup=SETTINGS_MARKUP)
+        bot.send_message(user_id, msg_37, reply_markup=SETTINGS_MARKUP)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return SETTING_CHOSEN
     else:

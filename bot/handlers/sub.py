@@ -1,6 +1,6 @@
 from bot.config import CREATOR_ID, DEFAULT_MARKUP, CREATOR_MARKUP, GENDER_START_MARKUP, \
                        USERNAME_STORED, GENDER_STORED, BIRTHDAY_STORED, END
-from bot.msgs import msg_3, msg_6, msg_8, msg_15, msg_16
+from bot.msgs import msg_3, msg_6, msg_8, msg_16, msg_17
 from bot.sql.get import get_user
 from bot.sql.update import update_user
 from bot.tools.chat_check import chat_check
@@ -47,12 +47,12 @@ def sub_msg(update, context):
                 word = word_form('подписан', gender)
                 substate = db_user[7]
                 if substate:
-                    msg = msg_16.format(a=word)
+                    msg = msg_17.format(a=word)
                 else:
                     verified, timesetting = db_user[6], db_user[8]
                     if not verified:
                         update_user('verified', True, user_id)
-                    msg = msg_15.format(a=word, b=timesetting)
+                    msg = msg_16.format(a=word, b=timesetting)
                 markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
                 bot.send_message(user_id, msg, reply_markup=markup)
                 update_user('latest', "'now()'::TIMESTAMPTZ", user_id)

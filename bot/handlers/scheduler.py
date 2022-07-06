@@ -3,7 +3,7 @@ from telegram.error import TelegramError
 from telegram.utils.helpers import mention_markdown
 
 from bot.config import LOGGER, TIMEZONE, DEFAULT_TIMESETTING, TYSOVKA_ID
-from bot.msgs import msg_1, msg_11, msg_14
+from bot.msgs import msg_1, msg_11, msg_14, msg_15
 from bot.msgs.emojis import greeting_emoji, birthday_emoji
 from bot.sql.get import get_users, get_user, get_table, get_birthday, get_every, get_switched, \
                         get_prompted, get_ignored, get_holidays
@@ -29,7 +29,7 @@ def mention_layout(user_id, dsr_list):
                        f"(SELECT birthday FROM users WHERE userid = {userid})))"
         update_user('age', age_subquery, userid)
         age = get_user(userid)[4]
-        line = string_escape('празднует своё {0}-летие'.format(age), '-')
+        line = string_escape('празднует своё {0}-летие'.format(age + 1), '-')
         pronoun = 'его' if gender == 'm' else 'её'
     else:
         line = 'празднуют свои дни рождения'
@@ -79,17 +79,22 @@ def scheduler(context):
     for row in users_rows:
         user_id = row[0]
         username = row[1]
+        birthday = row[3]
         substate = row[7]
+        timesetting = row[8]
         now = datetime.now(TIMEZONE)
         if substate:
             latest = row[11]
             minutes = int((now-latest).total_seconds() / 60)
+            if now.strftime('%m.%d') == birthday.strftime('%m.%d') and \
+               now.strftime('%H:%M') == timesetting:
+                msg = msg_14.format(a=username, b=birthday_emoji())
+                bot.send_message(user_id, msg)
             if get_table(user_id):
                 birthday_list = [x[0] for x in get_birthday(TIMEZONE, user_id)]
                 switched_list = get_switched(user_id, True)
                 desired_list = list(set(birthday_list) & set(switched_list))
                 if desired_list:
-                    timesetting = row[8]
                     ignored_list = get_ignored(user_id)
                     refined_list = list(set(desired_list) - set(ignored_list))
                     if now.strftime('%H:%M') == timesetting and refined_list:
@@ -117,6 +122,6 @@ def scheduler(context):
             if minutes == 5:
                 if len(users_rows) > 1:
                     if not get_table(user_id):
-                        bot.send_message(user_id, msg_14)
+                        bot.send_message(user_id, msg_15)
                     elif not get_switched(user_id, True):
-                        bot.send_message(user_id, msg_14)
+                        bot.send_message(user_id, msg_15)

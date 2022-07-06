@@ -3,7 +3,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.constants import MAX_ANSWER_CALLBACK_QUERY_TEXT_LENGTH
 
 from bot.config import TIMEZONE, CREATOR_ID, DEFAULT_MARKUP, CREATOR_MARKUP, END
-from bot.msgs import msg_12, msg_13, msg_26, msg_27, msg_28
+from bot.msgs import msg_12, msg_13, msg_27, msg_28, msg_29
 from bot.sql.get import get_users, get_user, get_people, get_every, get_switched
 from bot.sql.update import update_user, update_switchstate, update_global_switchstate
 from bot.tools.chat_check import chat_check
@@ -23,9 +23,9 @@ def people_birthdays(user_id, userid=None):
     age_subquery = "date_part('years', age(current_date, " \
                    "(SELECT birthday FROM users WHERE userid = {0})))"
     if userid:
+        age = get_user(userid)[4]
         username, birthday = desired_list[userid]
         update_user('age', age_subquery.format(userid), userid)
-        age = get_user(userid)[4]
         birthday = birthday.replace(
             year=current_year+1
             if (birthday.replace(year=current_year)-date_today).total_seconds() < 0
@@ -37,7 +37,7 @@ def people_birthdays(user_id, userid=None):
             line = 'будет праздновать своё {0}-летие'.format(int(age) + 1)
             msg = msg_12.format(a=username, b=line, c=birthday_time)
         else:
-            line = 'празднует своё {0}-летие'.format(age)
+            line = 'празднует своё {0}-летие'.format(int(age) + 1)
             msg = msg_13.format(a=username, b=line)
     else:
         birthdays = [(x[0], [x[1][0], x[1][1].replace(
@@ -57,8 +57,8 @@ def people_birthdays(user_id, userid=None):
         if birthday_time:
             if len(closest) == 1:
                 userid = closest[0][0]
-                update_user('age', age_subquery.format(userid), userid)
                 age = get_user(userid)[4]
+                update_user('age', age_subquery.format(userid), userid)
                 line = 'будет праздновать своё {0}-летие'.format(int(age) + 1)
             else:
                 line = 'будут праздновать свои дни рождения'
@@ -69,9 +69,9 @@ def people_birthdays(user_id, userid=None):
         else:
             if len(closest) == 1:
                 userid = closest[0][0]
-                update_user('age', age_subquery.format(userid), userid)
                 age = get_user(userid)[4]
-                line = 'празднует своё {0}-летие'.format(age)
+                update_user('age', age_subquery.format(userid), userid)
+                line = 'празднует своё {0}-летие'.format(int(age) + 1)
             else:
                 line = 'празднуют свои дни рождения'
             msg_len = len(msg_13.format(a='', b=line))
@@ -140,12 +140,12 @@ def people_msg(update, context):
             update_user('step', 'NULL', user_id)
             if get_people(user_id):
                 update_user('page', "'s_0'", user_id)
-                bot.send_message(user_id, msg_27, reply_markup=people_markup(user_id, 's', 0))
+                bot.send_message(user_id, msg_28, reply_markup=people_markup(user_id, 's', 0))
             else:
-                bot.send_message(user_id, msg_28, reply_markup=markup)
+                bot.send_message(user_id, msg_29, reply_markup=markup)
         else:
             update_user('step', "'people'", user_id)
-            bot.send_message(user_id, msg_26, reply_markup=markup)
+            bot.send_message(user_id, msg_27, reply_markup=markup)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return END
 
@@ -206,11 +206,11 @@ def people_cb(update, context):
                 return None
         else:
             query.edit_message_reply_markup(None)
-            query.edit_message_text(msg_28)
+            query.edit_message_text(msg_29)
     else:
         update_user('step', "'people'", user_id)
         markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-        query.bot.send_message(user_id, msg_26, reply_markup=markup)
+        query.bot.send_message(user_id, msg_27, reply_markup=markup)
         query.answer()
     update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END

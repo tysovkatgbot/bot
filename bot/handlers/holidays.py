@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot.config import CREATOR_MARKUP, HOLIDAY_ADDED, END
-from bot.msgs import msg_9, msg_37, msg_38, msg_39, msg_40
+from bot.msgs import msg_9, msg_38, msg_39, msg_40, msg_41
 from bot.msgs.emojis import holidays_emoji, emoji_17
 from bot.sql.get import get_holidays
 from bot.sql.get import get_user
@@ -43,17 +43,17 @@ def holidays_msg(update, context):
                     msg = holidays_layout(holidays_rows[0])
                     button_text = 'изменить праздники'
                 else:
-                    msg = msg_39
+                    msg = msg_40
                     button_text = 'добавить праздники'
             else:
-                msg = msg_39
+                msg = msg_40
                 button_text = 'добавить праздники'
             button = [[InlineKeyboardButton(text=button_text, callback_data='h_btn')]]
             markup = InlineKeyboardMarkup(button)
             bot.send_message(user_id, msg, reply_markup=markup)
         else:
             update_user('step', "'holidays'", user_id)
-            bot.send_message(user_id, msg_37, reply_markup=CREATOR_MARKUP)
+            bot.send_message(user_id, msg_38, reply_markup=CREATOR_MARKUP)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return END
 
@@ -70,7 +70,7 @@ def holidays_cb(update, context):
     if substate:
         if data == 'h_btn':
             update_user('step', "'holidays'", user_id)
-            bot.send_message(user_id, msg_38, reply_markup=CREATOR_MARKUP)
+            bot.send_message(user_id, msg_39, reply_markup=CREATOR_MARKUP)
             query.answer()
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             return HOLIDAY_ADDED
@@ -79,7 +79,7 @@ def holidays_cb(update, context):
             return None
     else:
         update_user('step', "'holidays'", user_id)
-        bot.send_message(user_id, msg_37, reply_markup=CREATOR_MARKUP)
+        bot.send_message(user_id, msg_38, reply_markup=CREATOR_MARKUP)
         query.answer()
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END
@@ -125,7 +125,7 @@ def process_holidays(update, context):
                     if inserted:
                         holidays_msg(update, context)
                     else:
-                        bot.send_message(user_id, msg_40, reply_markup=CREATOR_MARKUP)
+                        bot.send_message(user_id, msg_41, reply_markup=CREATOR_MARKUP)
                         return HOLIDAY_ADDED
             else:
                 bot.send_message(user_id, msg_9, reply_markup=CREATOR_MARKUP)

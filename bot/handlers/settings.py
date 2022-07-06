@@ -3,7 +3,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from bot.config import CREATOR_ID, DEFAULT_MARKUP, CREATOR_MARKUP, GENDER_SETTINGS_MARKUP, \
                        SETTINGS_MARKUP, USERNAME_STORED, GENDER_STORED, BIRTHDAY_STORED, \
                        SETTING_CHOSEN, END
-from bot.msgs import msg_3, msg_6, msg_7, msg_8, msg_35, msg_36
+from bot.msgs import msg_3, msg_6, msg_7, msg_8, msg_36, msg_37
 from bot.msgs.emojis import emoji_54
 from bot.sql.get import get_user
 from bot.sql.update import update_user
@@ -44,7 +44,7 @@ def settings_msg(update, context):
         else:
             update_user('step', "'settings'", user_id)
             markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-            bot.send_message(user_id, msg_35, reply_markup=markup)
+            bot.send_message(user_id, msg_36, reply_markup=markup)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return END
 
@@ -61,7 +61,7 @@ def settings_cb(update, context):
     if substate:
         if query_data == 's_btn':
             update_user('step', "'settings'", user_id)
-            bot.send_message(user_id, msg_36, reply_markup=SETTINGS_MARKUP)
+            bot.send_message(user_id, msg_37, reply_markup=SETTINGS_MARKUP)
             query.answer()
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             return SETTING_CHOSEN
@@ -71,7 +71,7 @@ def settings_cb(update, context):
     else:
         update_user('step', "'settings'", user_id)
         markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-        bot.send_message(user_id, msg_35, reply_markup=markup)
+        bot.send_message(user_id, msg_36, reply_markup=markup)
         query.answer()
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END
