@@ -39,7 +39,7 @@ def get_people(user_id):
     create_users()
     query = """
             CREATE TABLE IF NOT EXISTS people_{0} (
-                userid      INTEGER   PRIMARY KEY UNIQUE NOT NULL,
+                userid      BIGINT    PRIMARY KEY UNIQUE NOT NULL,
                 switchstate BOOLEAN   DEFAULT FALSE,
                 years       INTEGER[] DEFAULT NULL,
                 ignored     BOOLEAN   DEFAULT FALSE
@@ -139,7 +139,7 @@ def get_holidays():
     query = """
             CREATE TABLE IF NOT EXISTS holidays (
                 data   JSONB   DEFAULT '{}'::jsonb,
-                latest INTEGER DEFAULT NULL
+                latest BIGINT  DEFAULT NULL
             );
             SELECT *
             FROM holidays;

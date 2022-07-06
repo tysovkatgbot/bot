@@ -4,7 +4,7 @@ from bot.sql import query_execute
 def create_users():
     query = """
             CREATE TABLE IF NOT EXISTS users (
-                userid      INTEGER               PRIMARY KEY UNIQUE NOT NULL,
+                userid      BIGINT                PRIMARY KEY UNIQUE NOT NULL,
                 username    CHARACTER VARYING(32) UNIQUE DEFAULT NULL,
                 gender      CHARACTER VARYING(6)  DEFAULT NULL,
                 birthday    DATE                  DEFAULT NULL,
