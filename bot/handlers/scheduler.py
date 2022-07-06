@@ -29,7 +29,7 @@ def mention_layout(user_id, dsr_list):
                        f"(SELECT birthday FROM users WHERE userid = {userid})))"
         update_user('age', age_subquery, userid)
         age = get_user(userid)[4]
-        line = string_escape('празднует своё {0}-летие'.format(age + 1), '-')
+        line = string_escape('празднует своё {0}-летие'.format(age), '-')
         pronoun = 'его' if gender == 'm' else 'её'
     else:
         line = 'празднуют свои дни рождения'

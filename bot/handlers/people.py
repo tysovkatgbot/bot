@@ -23,21 +23,21 @@ def people_birthdays(user_id, userid=None):
     age_subquery = "date_part('years', age(current_date, " \
                    "(SELECT birthday FROM users WHERE userid = {0})))"
     if userid:
-        age = get_user(userid)[4]
         username, birthday = desired_list[userid]
-        update_user('age', age_subquery.format(userid), userid)
         birthday = birthday.replace(
             year=current_year+1
             if (birthday.replace(year=current_year)-date_today).total_seconds() < 0
             else current_year)
-        birthday_time = time_left(now, now.replace(
+        birthday_time = time_left(now.replace(microsecond=0), now.replace(
             year=birthday.year, month=birthday.month, day=birthday.day,
             hour=0, minute=0, second=0, microsecond=0))
+        update_user('age', age_subquery.format(userid), userid)
+        age = get_user(userid)[4]
         if birthday_time:
             line = 'будет праздновать своё {0}-летие'.format(int(age) + 1)
             msg = msg_12.format(a=username, b=line, c=birthday_time)
         else:
-            line = 'празднует своё {0}-летие'.format(int(age) + 1)
+            line = 'празднует своё {0}-летие'.format(age)
             msg = msg_13.format(a=username, b=line)
     else:
         birthdays = [(x[0], [x[1][0], x[1][1].replace(
@@ -51,14 +51,14 @@ def people_birthdays(user_id, userid=None):
             if not closest or closest[-1][1][1] == x[1][1]:
                 closest.append(x)
         birthday = closest[0][1][1]
-        birthday_time = time_left(now, now.replace(
+        birthday_time = time_left(now.replace(microsecond=0), now.replace(
             year=birthday.year, month=birthday.month, day=birthday.day,
             hour=0, minute=0, second=0, microsecond=0))
         if birthday_time:
             if len(closest) == 1:
                 userid = closest[0][0]
-                age = get_user(userid)[4]
                 update_user('age', age_subquery.format(userid), userid)
+                age = get_user(userid)[4]
                 line = 'будет праздновать своё {0}-летие'.format(int(age) + 1)
             else:
                 line = 'будут праздновать свои дни рождения'
@@ -69,9 +69,9 @@ def people_birthdays(user_id, userid=None):
         else:
             if len(closest) == 1:
                 userid = closest[0][0]
-                age = get_user(userid)[4]
                 update_user('age', age_subquery.format(userid), userid)
-                line = 'празднует своё {0}-летие'.format(int(age) + 1)
+                age = get_user(userid)[4]
+                line = 'празднует своё {0}-летие'.format(age)
             else:
                 line = 'празднуют свои дни рождения'
             msg_len = len(msg_13.format(a='', b=line))
