@@ -43,7 +43,7 @@ def group_msgs(context):
     now = datetime.now(TIMEZONE)
     if now.strftime('%H:%M') == DEFAULT_TIMESETTING:
         holidays_rows = get_holidays()
-        if holidays_rows and all(holidays_rows):
+        if holidays_rows:
             data, latest = holidays_rows
             for date, txt in list(data.items()):
                 date_today = now.strftime('%d.%m')
@@ -54,6 +54,7 @@ def group_msgs(context):
                 date_shifted = datetime_shifted.strftime('%d.%m')
                 if date_today == date:
                     try:
+                        txt = string_escape(txt, '_*[]()~`>#+-=|{}.!')
                         bot_msg = bot.send_message(TYSOVKA_ID, txt)
                         bot_msg_id = bot_msg['message_id']
                         update_holidays('latest', bot_msg_id)

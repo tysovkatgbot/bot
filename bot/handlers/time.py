@@ -84,7 +84,7 @@ def enter_time(update, context):
     user_id = user['id']
     message = update.effective_message
     txt = message.text
-    if datetime_check(txt, '%M:%S'):
+    if datetime_check(txt, '%H:%M'):
         timesetting = f'{txt.zfill(5) if len(txt) == 4 else txt}'
         clock_emoji = time_emoji(timesetting)
         msg = msg_25.format(a=timesetting, b=clock_emoji)

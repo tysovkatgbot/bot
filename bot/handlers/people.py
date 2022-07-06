@@ -1,8 +1,8 @@
-from datetime import date
+from datetime import datetime, date
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.constants import MAX_ANSWER_CALLBACK_QUERY_TEXT_LENGTH
 
-from bot.config import CREATOR_ID, DEFAULT_MARKUP, CREATOR_MARKUP, END
+from bot.config import TIMEZONE, CREATOR_ID, DEFAULT_MARKUP, CREATOR_MARKUP, END
 from bot.msgs import msg_12, msg_13, msg_26, msg_27, msg_28
 from bot.sql.get import get_users, get_user, get_people, get_every, get_switched
 from bot.sql.update import update_user, update_switchstate, update_global_switchstate
@@ -17,6 +17,7 @@ def people_birthdays(user_id, userid=None):
     userid_list = [row[0] for row in get_people(user_id)]
     desired_list = {row[0]: [row[1], row[3]] for row in get_users()
                     if row[0] != user_id and row[0] in userid_list}
+    now = datetime.now(TIMEZONE)
     date_today = date.today()
     current_year = date_today.year
     age_subquery = "date_part('years', age(current_date, " \
@@ -29,7 +30,9 @@ def people_birthdays(user_id, userid=None):
             year=current_year+1
             if (birthday.replace(year=current_year)-date_today).total_seconds() < 0
             else current_year)
-        birthday_time = time_left(date_today, birthday)
+        birthday_time = time_left(now, now.replace(
+            year=birthday.year, month=birthday.month, day=birthday.day,
+            hour=0, minute=0, second=0, microsecond=0))
         if birthday_time:
             line = 'будет праздновать своё {0}-летие'.format(int(age) + 1)
             msg = msg_12.format(a=username, b=line, c=birthday_time)
@@ -48,7 +51,9 @@ def people_birthdays(user_id, userid=None):
             if not closest or closest[-1][1][1] == x[1][1]:
                 closest.append(x)
         birthday = closest[0][1][1]
-        birthday_time = time_left(date_today, birthday)
+        birthday_time = time_left(now, now.replace(
+            year=birthday.year, month=birthday.month, day=birthday.day,
+            hour=0, minute=0, second=0, microsecond=0))
         if birthday_time:
             if len(closest) == 1:
                 userid = closest[0][0]
